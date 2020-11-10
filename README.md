@@ -1,2 +1,2 @@
-# SI-Projekt
-Projekt z systemów inteligentnych
+# IP-Projekt
+Projekt z inżynierii programowania
