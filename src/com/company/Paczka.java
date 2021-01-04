@@ -1,11 +1,15 @@
 package com.company;
 
-public class Paczka {
-    int id,id_pracownik,numer_statusu;
-    float wysokosc,szerokosc,glebokosc,waga,kubatura;
-    String status;
 
-    Paczka(int id, int id_pracownik, float wysokosc, float szerokosc, float glebokosc, float waga){
+import java.util.Date;
+
+public class Paczka {
+    int id,id_pracownik,id_kuriera,numer_statusu,nr_dom_o;
+    float wysokosc,szerokosc,glebokosc,waga,kubatura;
+    String status,imie_n,nazwisko_n,nr_tel_n,nr_tel_o,ulica_o;
+    Date data_nadania,data_dostarczenia;
+
+    Paczka(int id, int id_pracownik, float wysokosc, float szerokosc, float glebokosc, float waga, String imie_n, String nazwisko_n, String nr_tel_n, String nr_tel_o, String ulica_o, int nr_dom_o){
         this.id = id;
         this.id_pracownik = id_pracownik;
         this.wysokosc = wysokosc;
@@ -15,6 +19,16 @@ public class Paczka {
         this.kubatura = ObliczKubature();
         this.numer_statusu = 0;
         this.status = "Nadana";
+        this.id_kuriera = -1; // Zaden kurier nie dostarczyl jeszcze paczki
+
+        this.nr_dom_o = nr_dom_o;
+        this.imie_n = imie_n;
+        this.nazwisko_n = nazwisko_n;
+        this.nr_tel_n = nr_tel_n;
+        this.nr_tel_o = nr_tel_o;
+        this.ulica_o = ulica_o;
+        this.data_nadania = new java.util.Date();
+        this.data_dostarczenia = null;
     }
 
     private float ObliczKubature(){
@@ -27,7 +41,18 @@ public class Paczka {
             this.status = "Przekazana do doreczenia";
         }else if(this.numer_statusu == 2){
             this.status = "Doreczono";
-        }
+        }else if(this.numer_statusu > 2) this.numer_statusu = 2;
+    }
+
+    public void Dostarcz(int id_kuriera){
+        this.id_kuriera = id_kuriera;
+        this.data_dostarczenia = new java.util.Date();
+        ZaktualizujStatus();
+    }
+
+    public void CofnijStatus(){ // Jesli nie udalo sie dostarczyc przesylki to wraca do magazuny
+        this.numer_statusu = 0;
+        this.status = "Nadana";
     }
 
 

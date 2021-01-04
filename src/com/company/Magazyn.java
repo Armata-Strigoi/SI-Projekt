@@ -1,6 +1,5 @@
 package com.company;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i generowania listy paczek czekajacych na wysylke
@@ -35,9 +34,9 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     }
 
 
-    public void NadajPaczke(int id_pracownik, float wysokosc, float szerokosc, float glebokosc, float waga){
+    public void NadajPaczke(int id_pracownik, float wysokosc, float szerokosc, float glebokosc, float waga, String imie_n, String nazwisko_n, String nr_tel_n, String nr_tel_o, String ulica_o, int nr_dom_o){
         int size = this.paczki.size();
-        this.paczki.add(new Paczka(size,id_pracownik,wysokosc,szerokosc,glebokosc,waga));
+        this.paczki.add(new Paczka(size,id_pracownik,wysokosc,szerokosc,glebokosc,waga,imie_n,nazwisko_n,nr_tel_n,nr_tel_o,ulica_o,nr_dom_o));
         System.out.println("Pomyslnie nadano paczke o id: " + size);
     };
 
@@ -48,10 +47,12 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         ArrayList<Paczka> tmp = new ArrayList<Paczka>();
 
         for(int i=0;i<paczki.size();i++){
-            if(kubaturaTMP + this.paczki.get(i).kubatura <= kubaturaMAX){
-                this.paczki.get(i).ZaktualizujStatus();
-                tmp.add(this.paczki.get(i));
-                kubaturaTMP += this.paczki.get(i).kubatura;
+            if(this.paczki.get(i).numer_statusu == 0) {
+                if (kubaturaTMP + this.paczki.get(i).kubatura <= kubaturaMAX) {
+                    this.paczki.get(i).ZaktualizujStatus();
+                    tmp.add(this.paczki.get(i));
+                    kubaturaTMP += this.paczki.get(i).kubatura;
+                }
             }
         }
         System.out.println("Przydzielono paczki: " + tmp.size());
@@ -78,8 +79,31 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return tmp;
     }
 
-    public void DostarczPaczki(ArrayList<Paczka> dostarczony_ladunek){
-        //Zmiana statusu odpowiednich paczek
+    private int PrzeszukajPaczki(Paczka paka){
+        for(int i=0;i<paczki.size();i++){
+            if(this.paczki.get(i).id == paka.id){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void Magazynuj(ArrayList<Paczka> dostarczony_ladunek){//Zmiana statusu odpowiednich paczek
+        int index;
+        for(int i=0;i<dostarczony_ladunek.size();i++){
+
+            if((index = PrzeszukajPaczki(dostarczony_ladunek.get(i))) >= 0){
+                if(dostarczony_ladunek.get(i).numer_statusu >=2) {
+                    this.paczki.get(index).ZaktualizujStatus();
+                } else this.paczki.get(index).CofnijStatus();
+            }
+
+        }
+    }
+
+    public void DostarczPaczki(ArrayList<Paczka> dostarczony_ladunek, Samochod zwrocony_samochod){
+        Magazynuj(dostarczony_ladunek);
+        this.dostepne_samochody.add(zwrocony_samochod);
     }
 
 }

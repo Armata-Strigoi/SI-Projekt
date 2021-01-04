@@ -16,8 +16,21 @@ public class PracownikStacjonarny extends Pracownik {
         float glebokosc = scanner.nextFloat();
         System.out.println("Podaj wage paczki:");
         float waga = scanner.nextFloat();
+        System.out.println("Podaj imie nadawcy:");
+        scanner.nextLine();
+        String imie_n = scanner.nextLine();
+        System.out.println("Podaj nazwisko nadawcy:");
+        String nazwisko_n = scanner.nextLine();
+        System.out.println("Podaj nr telefonu nadawcy");
+        String nr_tel_n = scanner.nextLine();
+        System.out.println("Podaj nr telefonu odbiorcy");
+        String nr_tel_o = scanner.nextLine();
+        System.out.println("Podaj ulice odbiorcy");
+        String ulica_o = scanner.nextLine();
+        System.out.println("Podaj nr domu odbiorcy");
+        int nr_dom_o = scanner.nextInt();
 
-        this.magazyn.NadajPaczke(this.id_pracownik,wysokosc,szerokosc,glebokosc,waga);
+        this.magazyn.NadajPaczke(this.id_pracownik,wysokosc,szerokosc,glebokosc,waga,imie_n,nazwisko_n,nr_tel_n,nr_tel_o,ulica_o,nr_dom_o);
     }
 
     @Override
