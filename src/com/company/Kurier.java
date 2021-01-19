@@ -1,13 +1,16 @@
 package com.company;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Kurier extends Pracownik {
     ArrayList<Paczka> lista_paczek;
     Samochod samochod;
 
-    Kurier(Magazyn magazyn, int id){
-        super(magazyn,id);
+    Kurier(Magazyn magazyn, int id, Connection connection){
+        super(magazyn,id,connection);
     }
 
     private void PobierzPaczki(){
@@ -21,27 +24,34 @@ public class Kurier extends Pracownik {
     };
 
     private void DostarczPaczke(){
-        int id;
+        String idPaczki;
         System.out.println("--- DOSTARCZANIE PACZKI ---");
         System.out.println("Podaj id paczki do dostarczenia");
-        id = scanner.nextInt();
-        int index = ZnajdzPaczke(id);
+        idPaczki = scanner.next();
+        int index = ZnajdzPaczke(idPaczki);
         if(index >= 0){
             if(this.lista_paczek.get(index).numer_statusu>=3) System.err.println("Juz dostarczono te paczke!");
             else{
-                this.lista_paczek.get(index).Dostarcz(id_pracownik);
+                String sql = "UPDATE Paczki SET status = 2,data_dostarczenia = ? WHERE idPaczki = ?";
+                try {
+                    PreparedStatement query = this.connection.prepareStatement(sql);
+                    query.setObject(1,this.lista_paczek.get(index).Dostarcz(id_pracownik));
+                    query.setString(2,this.lista_paczek.get(index).idPaczki);
+                    query.executeUpdate();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
                 System.out.println("Dostarczono paczke");
             }
         } else {
             System.err.println("Nie znaleziono paczki o podanym ID");
         }
-
     }
 
-    private int ZnajdzPaczke(int id){
+    private int ZnajdzPaczke(String idPaczki){
         int index = -1;
         for(int i=0;i<lista_paczek.size();i++){
-            if(this.lista_paczek.get(i).id == id) index = i;
+            if(this.lista_paczek.get(i).idPaczki.equals(idPaczki)) index = i;
         }
         return index;
     }
@@ -53,10 +63,10 @@ public class Kurier extends Pracownik {
     }
 
     private void Listuj(){
-        if(this.lista_paczek.size()>0){
+        if(this.lista_paczek != null && this.lista_paczek.size()>0){
             System.out.println("ID | ADRES | STATUS");
             for(int i=0;i<lista_paczek.size();i++){
-                System.out.println(this.lista_paczek.get(i).id + " | " + this.lista_paczek.get(i).ulica_o + " | " + this.lista_paczek.get(i).status);
+                System.out.println(this.lista_paczek.get(i).idPaczki + " | " + this.lista_paczek.get(i).ulica_o + " | " + this.lista_paczek.get(i).status);
             }
         }
     }
@@ -85,8 +95,7 @@ public class Kurier extends Pracownik {
                 ZglosDostarczeniePaczek();
             }else if(this.opcja == 5){
                 Listuj();
-            }
-            else if(this.opcja == 0) {
+            }else if(this.opcja == 0) {
                 this.wyloguj = true;
             }
         }

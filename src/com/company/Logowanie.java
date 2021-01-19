@@ -1,14 +1,19 @@
 package com.company;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class Logowanie {
     Magazyn magazyn;
     private String[][] dane = new String[2][4]; // Login haslo rodzaj pracownika i id (pobierane z bazy)
+    Connection connection;
 
     private Uzytkownik Uprawnij(String kogo,int id){
-        if(kogo.equals("Pracownik_stacjonarny"))return new PracownikStacjonarny(magazyn,id);
-        else if(kogo.equals("Kierowca")) return new Kurier(magazyn,id);
+        if(kogo.equals("PracownikStacjonarny"))return new PracownikStacjonarny(magazyn,id);
+        else if(kogo.equals("Kurier")) return new Kurier(magazyn,id,connection);
         else return null;
     }
 
@@ -25,17 +30,23 @@ public class Logowanie {
         return null;
     }
 
-    Logowanie(Magazyn magazyn){
+    Logowanie(Magazyn magazyn, Connection connection){
         this.magazyn = magazyn;
-        dane[0][0] = "root";
-        dane[0][1] = "toor";
-        dane[0][2] = "Pracownik_stacjonarny";
-        dane[0][3] = "1";
-
-        dane[1][0] = "kierowca";
-        dane[1][1] = "toor";
-        dane[1][2] = "Kierowca";
-        dane[1][3] = "2";
+        this.connection = connection;
+        int i=0;
+        try {
+            Statement query = this.connection.createStatement();
+            ResultSet result = query.executeQuery("select login,hasło,stanowisko,idPracownicy from Pracownicy");
+            while(result.next()) {
+                dane[i][0] = result.getString("Login");
+                dane[i][1] = result.getString("Hasło");
+                dane[i][2] = result.getString("stanowisko");
+                dane[i][3] = result.getString("idPracownicy");
+                i++;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public Uzytkownik Loguj(){
