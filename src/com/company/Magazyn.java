@@ -40,10 +40,12 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
             Statement query = this.connection.createStatement();
             ResultSet result = query.executeQuery("select * from Paczki");
             while(result.next())
+
                 tmp.add(new Paczka( /////////////////// DOdane idDanychWspoldzielonych i usuniete wymiary
                         result.getString("idPaczki"), result.getInt("idDanychWspoldzielonych"), result.getInt("idPracownicy"), result.getInt("Status"),
                         result.getFloat("Waga"),
                         result.getDate("Data_nadania"),result.getDate("Data_dostarczenia"),
+
                         result.getString("Ulica_o"),result.getInt("Nr_ulica_o"),result.getInt("Nr_dom_o"),
                         result.getString("Nr_tel_o"), result.getString("Ulica_n"),result.getInt("Nr_ulica_n"),
                         result.getInt("Nr_dom_n"),result.getString("Nr_tel_n"), result.getFloat("Koszt")));
@@ -66,6 +68,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     }
 
     public void NadajPaczke(
+
             String typ, float waga, String ulica_o, // String typ tez jest dodany, tu sie przekazuje ten typ paczki ze rozmiar, funkcja
             int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n
     ){
@@ -75,12 +78,14 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
             System.err.println("Nie udalo sie nadac paczki (brak danych wspoldzielonych)");
         }
         this.paczki.add(new Paczka(uuid,sp,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n));
+
         String sql = "insert into Paczki values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement query = this.connection.prepareStatement(sql);
             query.setString(1,this.paczki.get(this.paczki.size() - 1).idPaczki);
             query.setNull(2,java.sql.Types.INTEGER);
             query.setInt(3,this.paczki.get(this.paczki.size() - 1).numer_statusu);
+
             query.setFloat(7,this.paczki.get(this.paczki.size() - 1).waga);
             query.setObject(9,this.paczki.get(this.paczki.size() - 1).data_nadania);
             query.setObject(10,this.paczki.get(this.paczki.size() - 1).data_dostarczenia);
@@ -120,7 +125,9 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
                     }
                     tmp.add(this.paczki.get(i));
                     System.out.println("ID: " + this.paczki.get(i).idPaczki);
+
                     kubaturaTMP += this.paczki.get(i).wspoldzielone_dane.kubatura;
+
                 }
             }
         }

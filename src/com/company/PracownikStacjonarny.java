@@ -33,6 +33,7 @@ public class PracownikStacjonarny extends Pracownik {
         String nr_tel_n = scanner.next();
 
         this.magazyn.NadajPaczke(typ,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n);
+
     }
 
     @Override
