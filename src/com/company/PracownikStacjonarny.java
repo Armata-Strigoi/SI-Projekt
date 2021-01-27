@@ -36,7 +36,9 @@ public class PracownikStacjonarny extends Pracownik {
         System.out.println("Podaj numer telefonu nadawcy:");
         String nr_tel_n = scanner.next();
 
-        this.magazyn.NadajPaczke(wysokosc,szerokosc,glebokosc,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n);
+        float koszt = szerokosc*wysokosc*glebokosc/waga;
+
+        this.magazyn.NadajPaczke(wysokosc,szerokosc,glebokosc,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,koszt);
     }
 
     @Override
