@@ -6,9 +6,22 @@ public class GlownySystem {
     private Uzytkownik user;
     private Magazyn magazyn;
 
-    public void stworzSystem(String login, String pass){
+    private static GlownySystem singleton = null; // Singleton
+
+    public static GlownySystem getInstance(){ // Singleton
+        if(singleton == null)
+            singleton = new GlownySystem();
+        return singleton;
+    }
+
+    private GlownySystem(){
+
+    }
+
+    public void zaladujSystem(String login, String pass){
         if(this.magazyn == null) {
             this.connection = new Connect(login,pass);
+            PaczkaFactory.PobierzZBazy();
             this.magazyn = new Magazyn(connection.connection);
             this.log = new Logowanie(magazyn,connection.connection);
         } else {

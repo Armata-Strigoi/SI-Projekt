@@ -15,6 +15,20 @@ public class Kurier extends Pracownik {
 
     private void PobierzPaczki(){
         this.lista_paczek = this.magazyn.PrzydzielPaczki();
+        if(this.lista_paczek != null && this.lista_paczek.size()>0){
+            for(int i=0;i<lista_paczek.size();i++){
+                String sql = "UPDATE Paczki SET idPracownicy = ? WHERE idPaczki = ?";
+                try {
+                    PreparedStatement query = this.connection.prepareStatement(sql);
+                    query.setInt(1,1);
+                    query.setString(2,this.lista_paczek.get(i).idPaczki);
+                    query.executeUpdate();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+        }
     };
 
     private void PrzydzielPojazd(){
@@ -50,16 +64,20 @@ public class Kurier extends Pracownik {
 
     private int ZnajdzPaczke(String idPaczki){
         int index = -1;
-        for(int i=0;i<lista_paczek.size();i++){
-            if(this.lista_paczek.get(i).idPaczki.equals(idPaczki)) index = i;
+        if(lista_paczek != null) {
+            for (int i = 0; i < lista_paczek.size(); i++) {
+                if (this.lista_paczek.get(i).idPaczki.contains(idPaczki)) index = i;
+            }
         }
         return index;
     }
 
     private void ZglosDostarczeniePaczek(){// zwroc samochod i liste
-        this.magazyn.DostarczPaczki(this.lista_paczek,this.samochod);
-        this.lista_paczek.clear();
-        this.samochod = null;
+        if(this.samochod != null && this.lista_paczek != null) {
+            this.magazyn.DostarczPaczki(this.lista_paczek, this.samochod);
+            this.lista_paczek.clear();
+            this.samochod = null;
+        }
     }
 
     private void Listuj(){
