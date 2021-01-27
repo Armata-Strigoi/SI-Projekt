@@ -12,6 +12,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     private ArrayList<Paczka> paczki;
     private ArrayList<Samochod> dostepne_samochody;
 
+    private ArrayList<PaczkaCore> paczkii;// To trzeba zrobic
 
     Magazyn(Connection connection){
         this.connection = connection;

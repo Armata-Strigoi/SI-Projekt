@@ -3,7 +3,7 @@ package com.company;
 
 import java.util.Date;
 
-public class Paczka {
+public class Paczka implements PaczkaCore{
     int numer_statusu,nr_ulica_o,nr_dom_o,nr_ulica_n,nr_dom_n;
     Integer id_kuriera;
 
@@ -98,5 +98,9 @@ public class Paczka {
         this.status = "Nadana";
     }
 
+    @Override
+    public String decorate(){
+        return "Paczka";
+    }
 
 }
