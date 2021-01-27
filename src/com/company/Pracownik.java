@@ -3,7 +3,7 @@ package com.company;
 import java.sql.Connection;
 import java.util.Scanner;
 
-public class Pracownik implements Uzytkownik {
+public class Pracownik implements UzytkownikCore {
     Scanner scanner = new Scanner(System.in);
     int opcja,id_pracownik;
     volatile Magazyn magazyn;

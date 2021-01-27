@@ -9,14 +9,17 @@ import java.util.UUID;
 
 public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i generowania listy paczek czekajacych na wysylke
     private Connection connection;
-    private ArrayList<Paczka> paczki;
+    private ArrayList<Paczka> paczki;// To do wywalenia
     private ArrayList<Samochod> dostepne_samochody;
 
-    private ArrayList<PaczkaCore> paczkii;// To trzeba zrobic
+    public PaczkiIterator paczkiiii; // To trzeba zrobic
 
     Magazyn(Connection connection){
         this.connection = connection;
         this.paczki = PobierzPaczki();
+        //@@@@@@@@@@@@@@@@@@@@ ta wersja
+        this.paczkiiii = new PaczkiIterator(PobierzPaczki()); // Wystarczy poprzerabiac na paczka core (w iteratorze tez, ale jest tak zeby sie kompilowalo)
+        //@@@@@@@@@@@@@@@@@@@@
         this.dostepne_samochody = PobierzSamochody();
 
     }

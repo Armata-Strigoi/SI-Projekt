@@ -3,7 +3,7 @@ package com.company;
 public class GlownySystem {
     private Connect connection;
     private Logowanie log;
-    private Uzytkownik user;
+    private UzytkownikCore user;
     private Magazyn magazyn;
 
     private static GlownySystem singleton = null; // Singleton

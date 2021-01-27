@@ -11,13 +11,13 @@ public class Logowanie {
     private String[][] dane = new String[2][4]; // Login haslo rodzaj pracownika i id (pobierane z bazy)
     Connection connection;
 
-    private Uzytkownik Uprawnij(String kogo,int id){
+    private UzytkownikCore Uprawnij(String kogo, int id){
         if(kogo.equals("PracownikStacjonarny"))return new PracownikStacjonarny(magazyn,id);
         else if(kogo.equals("Kurier")) return new Kurier(magazyn,id,connection);
         else return null;
     }
 
-    private Uzytkownik SprawdzDane(String login, String haslo){
+    private UzytkownikCore SprawdzDane(String login, String haslo){
         for(int i = 0;i<this.dane.length;i++){
             if(null != this.dane[i][0]) {
                 if (this.dane[i][0].equals(login)) {
@@ -49,7 +49,7 @@ public class Logowanie {
         }
     }
 
-    public Uzytkownik Loguj(){
+    public UzytkownikCore Loguj(){
         Scanner scan = new Scanner(System.in);
         System.out.println("Podaj login:");
         String login = scan.nextLine();
