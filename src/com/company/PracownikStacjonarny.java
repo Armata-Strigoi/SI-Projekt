@@ -9,12 +9,8 @@ public class PracownikStacjonarny extends Pracownik {
     }
     private void NadajPaczke(){
         System.out.println("--- Nadawanie paczki ---");
-        System.out.println("Podaj wysokosc paczki:");
-        float wysokosc = scanner.nextFloat();
-        System.out.println("Podaj szerokosc paczki:");
-        float szerokosc = scanner.nextFloat();
-        System.out.println("Podaj glebokosc paczki:");
-        float glebokosc = scanner.nextFloat();
+        System.out.println("Podaj typ paczki:");
+        String typ = scanner.nextLine();
         System.out.println("Podaj wage paczki:");
         float waga = scanner.nextFloat();
 
@@ -36,9 +32,8 @@ public class PracownikStacjonarny extends Pracownik {
         System.out.println("Podaj numer telefonu nadawcy:");
         String nr_tel_n = scanner.next();
 
-        float koszt = szerokosc*wysokosc*glebokosc/waga;
+        this.magazyn.NadajPaczke(typ,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n);
 
-        this.magazyn.NadajPaczke(wysokosc,szerokosc,glebokosc,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,koszt);
     }
 
     @Override

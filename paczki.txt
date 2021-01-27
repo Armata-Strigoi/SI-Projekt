@@ -1,0 +1,23 @@
+CREATE TABLE `paczki` (
+  `idPaczki` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `idPracownicy` int NOT NULL,
+  `Status` int NOT NULL,
+  `Wysokość` float NOT NULL,
+  `Szerokość` float NOT NULL,
+  `Głębokość` float NOT NULL,
+  `Waga` float NOT NULL,
+  `Kubatura` float NOT NULL,
+  `Data_nadania` date NOT NULL,
+  `Data_dostarczenia` date DEFAULT NULL,
+  `Ulica_o` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Nr_ulica_o` int NOT NULL,
+  `Nr_dom_o` int DEFAULT NULL,
+  `Nr_tel_o` varchar(15) COLLATE utf8_polish_ci NOT NULL,
+  `Ulica_n` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Nr_ulica_n` int NOT NULL,
+  `Nr_dom_n` int DEFAULT NULL,
+  `Nr_tel_n` varchar(15) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`idPaczki`),
+  UNIQUE KEY `idPaczki_UNIQUE` (`idPaczki`),
+  FOREIGN KEY (idPracownicy) REFERENCES pracownicy(idPracownicy)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci
