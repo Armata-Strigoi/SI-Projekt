@@ -9,19 +9,18 @@ import java.util.UUID;
 
 public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i generowania listy paczek czekajacych na wysylke
     private Connection connection;
-    private ArrayList<Paczka> paczki;// To do wywalenia
+    //private ArrayList<Paczka> paczki;// To do wywalenia
     private ArrayList<Samochod> dostepne_samochody;
 
-    public PaczkiIterator paczkiiii; // To trzeba zrobic
+    public PaczkiIterator paczki; // To trzeba zrobic
 
     Magazyn(Connection connection){
         this.connection = connection;
-        this.paczki = PobierzPaczki();
+        //this.paczki = PobierzPaczki();
         //@@@@@@@@@@@@@@@@@@@@ ta wersja
-        this.paczkiiii = new PaczkiIterator(PobierzPaczki()); // Wystarczy poprzerabiac na paczka core (w iteratorze tez, ale jest tak zeby sie kompilowalo)
+        this.paczki = new PaczkiIterator(PobierzPaczki());
         //@@@@@@@@@@@@@@@@@@@@
         this.dostepne_samochody = PobierzSamochody();
-
     }
 
     private ArrayList<Samochod> PobierzSamochody(){
@@ -52,7 +51,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
 
                         result.getString("Ulica_o"),result.getInt("Nr_ulica_o"),result.getInt("Nr_dom_o"),
                         result.getString("Nr_tel_o"), result.getString("Ulica_n"),result.getInt("Nr_ulica_n"),
-                        result.getInt("Nr_dom_n"),result.getString("Nr_tel_n"), result.getFloat("Koszt")));
+                        result.getInt("Nr_dom_n"),result.getString("Nr_tel_n"), result.getFloat("Koszt"),null));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -81,27 +80,27 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         if(sp == null){
             System.err.println("Nie udalo sie nadac paczki (brak danych wspoldzielonych)");
         }
-        this.paczki.add(new Paczka(uuid,sp,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n));
+        this.paczki.add(new Paczka(uuid,sp,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,null));
 
         String sql = "insert into Paczki values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement query = this.connection.prepareStatement(sql);
-            query.setString(1,this.paczki.get(this.paczki.size() - 1).idPaczki);
+            query.setString(1,this.paczki.getIndex(this.paczki.size() - 1).idPaczki);
             query.setNull(2,java.sql.Types.INTEGER);
-            query.setInt(3,this.paczki.get(this.paczki.size() - 1).numer_statusu);
+            query.setInt(3,this.paczki.getIndex(this.paczki.size() - 1).numer_statusu);
 
-            query.setFloat(7,this.paczki.get(this.paczki.size() - 1).waga);
-            query.setObject(9,this.paczki.get(this.paczki.size() - 1).data_nadania);
-            query.setObject(10,this.paczki.get(this.paczki.size() - 1).data_dostarczenia);
-            query.setString(11,this.paczki.get(this.paczki.size() - 1).ulica_o);
-            query.setInt(12,this.paczki.get(this.paczki.size() - 1).nr_ulica_o);
-            query.setInt(13,this.paczki.get(this.paczki.size() - 1).nr_dom_o);
-            query.setString(14,this.paczki.get(this.paczki.size() - 1).nr_tel_o);
-            query.setString(15,this.paczki.get(this.paczki.size() - 1).ulica_n);
-            query.setInt(16,this.paczki.get(this.paczki.size() - 1).nr_ulica_n);
-            query.setInt(17,this.paczki.get(this.paczki.size() - 1).nr_dom_n);
-            query.setString(18,this.paczki.get(this.paczki.size() - 1).nr_tel_n);
-            query.setFloat(19,this.paczki.get(this.paczki.size() - 1).koszt);
+            query.setFloat(7,this.paczki.getIndex(this.paczki.size() - 1).waga);
+            query.setObject(9,this.paczki.getIndex(this.paczki.size() - 1).data_nadania);
+            query.setObject(10,this.paczki.getIndex(this.paczki.size() - 1).data_dostarczenia);
+            query.setString(11,this.paczki.getIndex(this.paczki.size() - 1).ulica_o);
+            query.setInt(12,this.paczki.getIndex(this.paczki.size() - 1).nr_ulica_o);
+            query.setInt(13,this.paczki.getIndex(this.paczki.size() - 1).nr_dom_o);
+            query.setString(14,this.paczki.getIndex(this.paczki.size() - 1).nr_tel_o);
+            query.setString(15,this.paczki.getIndex(this.paczki.size() - 1).ulica_n);
+            query.setInt(16,this.paczki.getIndex(this.paczki.size() - 1).nr_ulica_n);
+            query.setInt(17,this.paczki.getIndex(this.paczki.size() - 1).nr_dom_n);
+            query.setString(18,this.paczki.getIndex(this.paczki.size() - 1).nr_tel_n);
+            query.setFloat(19,this.paczki.getIndex(this.paczki.size() - 1).koszt);
             query.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -116,21 +115,21 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         ArrayList<Paczka> tmp = new ArrayList<Paczka>();
         if(this.paczki.size() != 0) System.out.println("Kurier bierze paczki: ");
         for(int i=0;i<paczki.size();i++){
-            if(this.paczki.get(i).numer_statusu == 0) {
-                if (kubaturaTMP + this.paczki.get(i).wspoldzielone_dane.kubatura <= kubaturaMAX) {
+            if(this.paczki.getIndex(i).numer_statusu == 0) {
+                if (kubaturaTMP + this.paczki.getIndex(i).wspoldzielone_dane.kubatura <= kubaturaMAX) {
                     String sql = "UPDATE Paczki SET status = ? WHERE idPaczki = ?";
                     try {
                         PreparedStatement query = this.connection.prepareStatement(sql);
-                        query.setInt(1,this.paczki.get(i).ZaktualizujStatus());
-                        query.setString(2,this.paczki.get(i).idPaczki);
+                        query.setInt(1,this.paczki.getIndex(i).ZaktualizujStatus());
+                        query.setString(2,this.paczki.getIndex(i).idPaczki);
                         query.executeUpdate();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
-                    tmp.add(this.paczki.get(i));
-                    System.out.println("ID: " + this.paczki.get(i).idPaczki);
+                    tmp.add(this.paczki.getIndex(i));
+                    System.out.println("ID: " + this.paczki.getIndex(i).idPaczki);
 
-                    kubaturaTMP += this.paczki.get(i).wspoldzielone_dane.kubatura;
+                    kubaturaTMP += this.paczki.getIndex(i).wspoldzielone_dane.kubatura;
 
                 }
             }
@@ -161,7 +160,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
 
     private int PrzeszukajPaczki(Paczka paka){
         for(int i=0;i<paczki.size();i++){
-            if(this.paczki.get(i).idPaczki.equals(paka.idPaczki)){
+            if(this.paczki.getIndex(i).idPaczki.equals(paka.idPaczki)){
                 return i;
             }
         }
@@ -177,18 +176,18 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
                         String sql = "UPDATE Paczki SET status = ? WHERE idPaczki = ?";
                         try {
                             PreparedStatement query = this.connection.prepareStatement(sql);
-                            query.setInt(1, this.paczki.get(index).ZaktualizujStatus());
-                            query.setString(2, this.paczki.get(index).idPaczki);
+                            query.setInt(1, this.paczki.getIndex(index).ZaktualizujStatus());
+                            query.setString(2, this.paczki.getIndex(index).idPaczki);
                             query.executeUpdate();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
                     } else {
-                        this.paczki.get(index).CofnijStatus();
+                        this.paczki.getIndex(index).CofnijStatus();
                         String sql = "UPDATE Paczki SET status = 0 WHERE idPaczki = ?";
                         try {
                             PreparedStatement query = this.connection.prepareStatement(sql);
-                            query.setString(1, this.paczki.get(index).idPaczki);
+                            query.setString(1, this.paczki.getIndex(index).idPaczki);
                             query.executeUpdate();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();

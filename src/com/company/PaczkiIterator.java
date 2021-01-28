@@ -46,6 +46,12 @@ public class PaczkiIterator implements IteratorCore{
     }
 
     @Override
+    public Paczka getIndex(int index){
+        if(index < paczki.size()) return paczki.get(index);
+        return null;
+    }
+
+    @Override
     public boolean hasIndex(int i){
         return i < paczki.size();
     }
@@ -67,6 +73,16 @@ public class PaczkiIterator implements IteratorCore{
     @Override
     public void reset(){
         obecnaPozycja = 0;
+    }
+
+    @Override
+    public void add(Paczka co){
+        this.paczki.add(co);
+    }
+
+    @Override
+    public int size(){
+        return this.paczki.size();
     }
 
 }

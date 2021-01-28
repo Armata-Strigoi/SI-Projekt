@@ -1,11 +1,12 @@
 package com.company;
 
 public class PaczkaZZawartosciaMagnetyczna extends PaczkaDecorator{
-    public PaczkaZZawartosciaMagnetyczna(){
-        super();
+    public PaczkaZZawartosciaMagnetyczna(PaczkaCore paczka){
+        super(paczka);
     }
     @Override
     public String decorate(){
-        return super.decorate() + " Z zawartoscia magnetyczna";
+        if(core != null) return super.decorate() + " Z zawartoscia megnetyczna";
+        return " Z zawartoscia megnetyczna";
     }
 }

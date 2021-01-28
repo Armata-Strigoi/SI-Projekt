@@ -48,7 +48,7 @@ public class Ksiegowy  extends Pracownik {
             return;
         }
         System.out.println("--- Generuje raport z miesiaca: " + (miesiac+1) + " ---");
-        float zysk_z_paczek = this.magazyn.paczkiiii.ZwrocZyskZPaczek(miesiac);
+        float zysk_z_paczek = this.magazyn.paczki.ZwrocZyskZPaczek(miesiac);
         float wyplaty = 0;
         System.out.println("Zysk z paczek: " + zysk_z_paczek);
 
@@ -64,7 +64,7 @@ public class Ksiegowy  extends Pracownik {
             System.out.println("Podaj odpowiedni miesiac!");
             return;
         }
-        ArrayList<Paczka> paczki_z_miesiaca = this.magazyn.paczkiiii.ZwrocPaczkiZMiesiaca(miesiac);
+        ArrayList<Paczka> paczki_z_miesiaca = this.magazyn.paczki.ZwrocPaczkiZMiesiaca(miesiac);
         HashMap<Integer, Float> ranking = new HashMap<>();
         for(int i=0;i<paczki_z_miesiaca.size();i++){
             Paczka tmp = paczki_z_miesiaca.get(i);

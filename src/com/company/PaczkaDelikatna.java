@@ -1,11 +1,12 @@
 package com.company;
 
 public class PaczkaDelikatna extends PaczkaDecorator{
-    public PaczkaDelikatna(){
-        super();
+    public PaczkaDelikatna(PaczkaCore paczka){
+        super(paczka);
     }
     @Override
     public String decorate(){
-        return super.decorate() + " Delikatna";
+        if(core != null) return super.decorate() + " Delikatna";
+        return " Delikatna";
     }
 }

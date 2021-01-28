@@ -3,7 +3,7 @@ package com.company;
 
 import java.util.Date;
 
-public class Paczka implements PaczkaCore{
+public class Paczka extends PaczkaDecorator{
     int numer_statusu,nr_ulica_o,nr_dom_o,nr_ulica_n,nr_dom_n;
     Integer id_kuriera;
 
@@ -16,10 +16,10 @@ public class Paczka implements PaczkaCore{
     Paczka(
 
             String idPaczki, SharedPaczka wpoldzieloneDane, float waga, String ulica_o,
-            int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n
+            int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n, PaczkaCore dekorator
 
     ){
-
+        super(dekorator);
         this.idPaczki = idPaczki;
         this.wspoldzielone_dane = wpoldzieloneDane;
         this.waga = waga;
@@ -37,6 +37,7 @@ public class Paczka implements PaczkaCore{
         this.ulica_o = ulica_o;
         this.data_nadania = new java.util.Date();
         this.data_dostarczenia = null;
+
     }
 
     Paczka(
@@ -44,9 +45,9 @@ public class Paczka implements PaczkaCore{
            String idPaczki, int id_danych_wspoldzielonych, int idPracownicy, int status, float waga,
 
            Date data_nadania, Date data_dostarczenia, String ulica_o, int nr_ulica_o, int nr_dom_o,
-           String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n, float koszt
+           String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n, float koszt, PaczkaCore dekorator
     ){
-
+        super(dekorator);
         this.idPaczki = idPaczki;
         this.id_kuriera = idPracownicy;
 
@@ -98,8 +99,8 @@ public class Paczka implements PaczkaCore{
         this.status = "Nadana";
     }
 
-    @Override
     public String decorate(){
+        if(core != null)return  "Paczka" + core.decorate();
         return "Paczka";
     }
 

@@ -1,9 +1,10 @@
 package com.company;
 
 public abstract class PaczkaDecorator implements PaczkaCore {
-    private PaczkaCore core;
+    public PaczkaCore core;
 
-    public PaczkaDecorator() {
+    public PaczkaDecorator(PaczkaCore paczka) {
+        this.core = paczka;
     }
 
     @Override
