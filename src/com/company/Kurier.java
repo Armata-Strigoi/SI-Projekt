@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Kurier extends Pracownik {
     ArrayList<Paczka> lista_paczek;
-    Samochod samochod;
+    Pojazd pojazd;
 
     Kurier(Magazyn magazyn, int id, Connection connection){
         super(magazyn,id,connection);
@@ -34,7 +34,8 @@ public class Kurier extends Pracownik {
 
     private void PrzydzielPojazd(){
         if(lista_paczek != null) {
-            this.samochod = this.magazyn.PrzydzielSamochod(lista_paczek);
+            this.pojazd = this.magazyn.PrzydzielSamochod(lista_paczek);
+            if(this.pojazd != null)System.out.println("Przydzielono: " + this.pojazd.toString());
         }
     };
 
@@ -75,9 +76,9 @@ public class Kurier extends Pracownik {
 
     private void ZglosDostarczeniePaczek(){// zwroc samochod i liste
         if(this.lista_paczek != null) {
-            this.magazyn.DostarczPaczki(this.lista_paczek, this.samochod);
+            this.magazyn.DostarczPaczki(this.lista_paczek, this.pojazd);
             this.lista_paczek.clear();
-            this.samochod = null;
+            this.pojazd = null;
         }
     }
 

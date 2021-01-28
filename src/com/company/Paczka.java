@@ -20,7 +20,7 @@ public class Paczka extends PaczkaDecorator{
         this.wspoldzielone_dane = wspoldzieloneDane;
         this.waga = waga;
         this.numer_statusu = 0;
-        this.status = "Nadana";
+        this.status = STATUS.PIERWSZY.nazwa;
         this.id_kuriera = null;
 
         this.nr_ulica_n = nr_ulica_n;
@@ -65,20 +65,20 @@ public class Paczka extends PaczkaDecorator{
     public int ZaktualizujStatus() {
         this.numer_statusu++;
         if(this.numer_statusu == 1) {
-            this.status = "Przekazana do doreczenia";
+            this.status = STATUS.DRUGI.nazwa;
         }else if(this.numer_statusu == 2){
-            this.status = "Doreczono";
+            this.status = STATUS.TRZECI.nazwa;
         }else if(this.numer_statusu > 2) this.numer_statusu = 2;
         return this.numer_statusu;
     }
     public void UstawStatus() {
         if(this.numer_statusu == 0) {
-            this.status = "Nadana";
+            this.status = STATUS.PIERWSZY.nazwa;
         }else if(this.numer_statusu == 1){
-            this.status = "Przekazana do doreczenia";
+            this.status = STATUS.DRUGI.nazwa;
         }
         else if(this.numer_statusu == 2) {
-            this.status = "Doreczono";
+            this.status = STATUS.TRZECI.nazwa;
         }
     }
     public Date Dostarcz(int id_kuriera){
@@ -90,7 +90,7 @@ public class Paczka extends PaczkaDecorator{
     public void CofnijStatus(){ // Jesli nie udalo sie dostarczyc przesylki to wraca do magazuny
         this.id_kuriera = null;
         this.numer_statusu = 0;
-        this.status = "Nadana";
+        this.status = STATUS.PIERWSZY.nazwa;
     }
 
     @Override

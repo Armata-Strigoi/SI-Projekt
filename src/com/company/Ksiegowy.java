@@ -2,7 +2,6 @@ package com.company;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 public class Ksiegowy  extends Pracownik {
