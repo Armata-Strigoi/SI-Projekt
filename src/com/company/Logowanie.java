@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Logowanie {
     Magazyn magazyn;
-    private String[][] dane = new String[3][4]; // Login haslo rodzaj pracownika i id (pobierane z bazy)
+    private String[][] dane = new String[10][4]; // Login haslo rodzaj pracownika i id (pobierane z bazy)
     Connection connection;
 
     private UzytkownikCore Uprawnij(String kogo,int id){

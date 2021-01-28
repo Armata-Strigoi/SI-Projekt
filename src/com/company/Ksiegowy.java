@@ -19,6 +19,8 @@ public class Ksiegowy  extends Pracownik {
             System.out.println("1. Wygeneruj zestawienie (raport) miesieczne");
             System.out.println("2. Wygeneruj ranking pracownikow");
             System.out.println("3. Daj premie pracownikowi");
+            System.out.println("4. Zapisz stan bazy paczek");
+            System.out.println("5. Przywroc stan paczek z caretaker'a");
             System.out.println("0. Wyjdz");
             this.opcja = scanner.nextInt();
 
@@ -38,6 +40,10 @@ public class Ksiegowy  extends Pracownik {
                 System.out.println("Podaj wysokosc premii:");
                 float premia = scanner.nextFloat();
                 dajPremie(imie, nazwisko, premia);
+            }else if(this.opcja == 4){
+                this.magazyn.ZapiszStanPaczek();
+            }else if(this.opcja == 5){
+                this.magazyn.kopia.PrzywrocPoprzedniStan(magazyn);
             }else if(this.opcja == 0) {
                 this.wyloguj = true;
             }

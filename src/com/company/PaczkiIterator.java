@@ -10,6 +10,7 @@ public class PaczkiIterator implements IteratorCore{
         this.paczki = paczki;
     }
 
+
     public float ZwrocZyskZPaczek(int miesiac){
         ArrayList<Paczka> paczki_z_miesiaca = ZwrocPaczkiZMiesiaca(miesiac);
         float zysk_z_paczek = 0;

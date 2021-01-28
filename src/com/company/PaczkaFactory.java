@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.*;
 
 public class PaczkaFactory {
-    static Map<String, SharedPaczka> typyPaczek = new HashMap<>();
+    private static HashMap<String, SharedPaczka> typyPaczek = new HashMap<>();
 
     public static void PobierzZBazy(Connection connection){
         try {
@@ -60,6 +60,14 @@ public class PaczkaFactory {
             }
         }
         return sharedpaczka;
+    }
+
+    public static HashMap<String,SharedPaczka> ZwrocListeTypow(){
+        return typyPaczek;
+    }
+
+    public static void setTypyPaczek(HashMap<String,SharedPaczka> nowe){
+        typyPaczek = nowe;
     }
 
 

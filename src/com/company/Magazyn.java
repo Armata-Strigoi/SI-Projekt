@@ -10,11 +10,17 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     private Connection connection;
     private ArrayList<Samochod> dostepne_samochody;
     public PaczkiIterator pIterator;
+    public Memento kopia;
 
     Magazyn(Connection connection){
         this.connection = connection;
         this.pIterator = new PaczkiIterator(PobierzPaczki());
         this.dostepne_samochody = PobierzSamochody();
+        this.kopia = new Memento();
+    }
+
+    public void ZapiszStanPaczek(){
+        this.kopia.ZapiszStanPaczek(this.pIterator);
     }
 
     private ArrayList<Samochod> PobierzSamochody(){
