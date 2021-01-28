@@ -38,6 +38,7 @@ public class GlownySystem {
         if(null != this.user){
             this.user.pracuj();
         }
+        this.magazyn.kopia.ZapiszStanPaczek(this.magazyn.pIterator,this.connection.connection);
         this.connection.close();
     }
 }

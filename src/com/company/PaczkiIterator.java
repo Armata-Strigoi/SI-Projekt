@@ -43,6 +43,7 @@ public class PaczkiIterator implements IteratorCore{
                 paczuchy.add(tmp);
             }
         }
+        this.reset();
         return paczuchy;
     }
     @Override

@@ -62,13 +62,11 @@ public class PaczkaFactory {
         return sharedpaczka;
     }
 
-    public static HashMap<String,SharedPaczka> ZwrocListeTypow(){
-        return typyPaczek;
+    public static String getType(SharedPaczka sharedPaczka){
+        for(String iterator : typyPaczek.keySet()){
+            if(sharedPaczka.equals(typyPaczek.get(iterator)))
+                return iterator;
+        }
+        return null;
     }
-
-    public static void setTypyPaczek(HashMap<String,SharedPaczka> nowe){
-        typyPaczek = nowe;
-    }
-
-
 }

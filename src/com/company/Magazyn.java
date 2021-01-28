@@ -16,11 +16,11 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         this.connection = connection;
         this.pIterator = new PaczkiIterator(PobierzPaczki());
         this.dostepne_samochody = PobierzSamochody();
-        this.kopia = new Memento();
+        this.kopia = new Memento(this.connection);
     }
 
     public void ZapiszStanPaczek(){
-        this.kopia.ZapiszStanPaczek(this.pIterator);
+        this.kopia.ZapiszStanPaczek(this.pIterator,this.connection);
     }
 
     private ArrayList<Samochod> PobierzSamochody(){
@@ -77,11 +77,6 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
             String typ, float waga, String ulica_o, // String typ tez jest dodany, tu sie przekazuje ten typ paczki ze rozmiar, funkcja
             int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n,int delikatna, int magnetyczna, int paletowa
     ){
-        //
-        // PaczkaCore tmp = new Paczka();
-        //   if(1==1) tmp = new PaczkaDelikatna(tmp);
-        //
-        //Chuja dziala
         String uuid = UUID.randomUUID().toString().toUpperCase();
         SharedPaczka sp = PaczkaFactory.getSharedPaczka(typ,this.connection);
         if(sp == null){

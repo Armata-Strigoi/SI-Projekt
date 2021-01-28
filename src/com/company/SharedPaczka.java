@@ -1,7 +1,6 @@
 package com.company;
 
 public class SharedPaczka {
-     //To z bazy trzeba wyciagac jak i reszte w sumie
     float wysokosc,szerokosc,glebokosc,kubatura,koszt;
 
     public SharedPaczka(float wysokosc, float szerokosc, float glebokosc,float koszt){

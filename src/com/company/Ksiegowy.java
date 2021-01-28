@@ -42,11 +42,16 @@ public class Ksiegowy  extends Pracownik {
                 dajPremie(imie, nazwisko, premia);
             }else if(this.opcja == 4){
                 this.magazyn.ZapiszStanPaczek();
+                this.magazyn.pIterator.reset();
             }else if(this.opcja == 5){
                 this.magazyn.kopia.PrzywrocPoprzedniStan(magazyn);
+                this.magazyn.pIterator.reset();
+                this.magazyn.kopia.ZapiszDoBazy(connection);
+                this.magazyn.pIterator.reset();
             }else if(this.opcja == 0) {
                 this.wyloguj = true;
             }
+            scanner.reset();
         }
     }
 
@@ -71,6 +76,7 @@ public class Ksiegowy  extends Pracownik {
         }
         System.out.println("Koszt pracownikow: " + wyplaty);
         System.out.println("Razem: " + (zysk_z_paczek - wyplaty));
+        this.magazyn.pIterator.reset();
 
     }
 
@@ -87,7 +93,6 @@ public class Ksiegowy  extends Pracownik {
                 ranking.put(tmp.id_kuriera,
                         ranking.get(tmp.id_kuriera) + obliczWartosc(tmp));
             } else {
-                System.out.println("Tutaj");
                 ranking.put(tmp.id_kuriera,obliczWartosc(tmp));
             }
         }
@@ -98,7 +103,7 @@ public class Ksiegowy  extends Pracownik {
 
         System.out.println("Ranking pracownikow:");
         System.out.println(result);
-
+        this.magazyn.pIterator.reset();
     }
 
     private Float obliczWartosc(Paczka paczka){
