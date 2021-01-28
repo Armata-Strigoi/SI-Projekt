@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.sql.*;
 import java.util.UUID;
 
+
 public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i generowania listy paczek czekajacych na wysylke
     private Connection connection;
-    private ArrayList<Paczka> paczki;
     private ArrayList<Samochod> dostepne_samochody;
+    public PaczkiIterator pIterator;
 
     Magazyn(Connection connection){
         this.connection = connection;
-        this.paczki = PobierzPaczki();
+        this.pIterator = new PaczkiIterator(PobierzPaczki());
         this.dostepne_samochody = PobierzSamochody();
-
     }
 
     private ArrayList<Samochod> PobierzSamochody(){
@@ -32,22 +32,27 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     }
 
     private ArrayList<Paczka> PobierzPaczki(){
-        ArrayList<Paczka> tmp = new ArrayList<Paczka>();
+        ArrayList<Paczka> tmpList = new ArrayList<Paczka>();
         try {
             Statement query = this.connection.createStatement();
-            ResultSet result = query.executeQuery("select * from Paczki");
-            while(result.next())
-                tmp.add(new Paczka(
-                        result.getString("idPaczki"), result.getInt("idPracownicy"), result.getInt("Status"), result.getFloat("Wysokość"),
-                        result.getFloat("Szerokość"),result.getFloat("Głębokość"), result.getFloat("Waga"),
-                        result.getFloat("Kubatura"),result.getDate("Data_nadania"),result.getDate("Data_dostarczenia"),
-                        result.getString("Ulica_o"),result.getInt("Nr_ulica_o"),result.getInt("Nr_dom_o"),
-                        result.getString("Nr_tel_o"), result.getString("Ulica_n"),result.getInt("Nr_ulica_n"),
-                        result.getInt("Nr_dom_n"),result.getString("Nr_tel_n"), result.getFloat("Koszt")));
+            ResultSet result = query.executeQuery("SELECT paczki.* FROM paczki, wspoldzielonedane WHERE paczki.idWspoldzieloneDane = wspoldzielonedane.idWspoldzieloneDane");
+            while(result.next()) {
+                PaczkaCore tmpCore = null;
+                if(result.getInt("CzyDelikatna")==1) tmpCore = new PaczkaDelikatna(tmpCore);
+                if(result.getInt("CzyMagnetyczna")==1) tmpCore = new PaczkaZZawartosciaMagnetyczna(tmpCore);
+                if(result.getInt("CzyPaletowa")==1) tmpCore = new PaczkaPaletowa(tmpCore);
+                Paczka tmpPaczka = new Paczka(
+                        result.getString("idPaczki"), PaczkaFactory.getSharedPaczka(result.getString("idWspoldzieloneDane"),this.connection),
+                        result.getInt("idPracownicy"), result.getInt("Status"),  result.getFloat("Waga"), result.getDate("Data_nadania"),
+                        result.getDate("Data_dostarczenia"), result.getString("Ulica_o"), result.getInt("Nr_ulica_o"),
+                        result.getInt("Nr_dom_o"), result.getString("Nr_tel_o"), result.getString("Ulica_n"),
+                        result.getInt("Nr_ulica_n"), result.getInt("Nr_dom_n"), result.getString("Nr_tel_n"),tmpCore);
+                tmpList.add(tmpPaczka);
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return tmp;
+        return tmpList;
     }
 
     private float ZnajdzNajbardziejLadownySamochod(){
@@ -63,33 +68,48 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
 
 
     public void NadajPaczke(
-            float wysokosc, float szerokosc, float glebokosc, float waga, String ulica_o,
-            int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n,float koszt
+            String typ, float waga, String ulica_o, // String typ tez jest dodany, tu sie przekazuje ten typ paczki ze rozmiar, funkcja
+            int nr_ulica_o, int nr_dom_o, String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n,int delikatna, int magnetyczna, int paletowa
     ){
+        //
+        // PaczkaCore tmp = new Paczka();
+        //   if(1==1) tmp = new PaczkaDelikatna(tmp);
+        //
+        //Chuja dziala
         String uuid = UUID.randomUUID().toString().toUpperCase();
-        this.paczki.add(new Paczka(uuid,wysokosc,szerokosc,glebokosc,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,koszt));
-        String sql = "insert into Paczki values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        SharedPaczka sp = PaczkaFactory.getSharedPaczka(typ,this.connection);
+        if(sp == null){
+            System.err.println("Nie udalo sie nadac paczki (brak danych wspoldzielonych)");
+            return;
+        }
+        PaczkaCore tmpCore = null;
+        if(delikatna==1) tmpCore = new PaczkaDelikatna(tmpCore);
+        if(magnetyczna==1) tmpCore = new PaczkaZZawartosciaMagnetyczna(tmpCore);
+        if(paletowa==1) tmpCore = new PaczkaPaletowa(tmpCore);
+        Paczka tmpPaczka = new Paczka(uuid,sp,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,tmpCore);
+        this.pIterator.paczki.add(tmpPaczka);
+        System.out.println(this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).idPaczki);
+        String sql = "insert into Paczki values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement query = this.connection.prepareStatement(sql);
-            query.setString(1,this.paczki.get(this.paczki.size() - 1).idPaczki);
-            query.setNull(2,java.sql.Types.INTEGER);
-            query.setInt(3,this.paczki.get(this.paczki.size() - 1).numer_statusu);
-            query.setFloat(4,this.paczki.get(this.paczki.size() - 1).wysokosc);
-            query.setFloat(5,this.paczki.get(this.paczki.size() - 1).szerokosc);
-            query.setFloat(6,this.paczki.get(this.paczki.size() - 1).glebokosc);
-            query.setFloat(7,this.paczki.get(this.paczki.size() - 1).waga);
-            query.setFloat(8,this.paczki.get(this.paczki.size() - 1).kubatura);
-            query.setObject(9,this.paczki.get(this.paczki.size() - 1).data_nadania);
-            query.setObject(10,this.paczki.get(this.paczki.size() - 1).data_dostarczenia);
-            query.setString(11,this.paczki.get(this.paczki.size() - 1).ulica_o);
-            query.setInt(12,this.paczki.get(this.paczki.size() - 1).nr_ulica_o);
-            query.setInt(13,this.paczki.get(this.paczki.size() - 1).nr_dom_o);
-            query.setString(14,this.paczki.get(this.paczki.size() - 1).nr_tel_o);
-            query.setString(15,this.paczki.get(this.paczki.size() - 1).ulica_n);
-            query.setInt(16,this.paczki.get(this.paczki.size() - 1).nr_ulica_n);
-            query.setInt(17,this.paczki.get(this.paczki.size() - 1).nr_dom_n);
-            query.setString(18,this.paczki.get(this.paczki.size() - 1).nr_tel_n);
-            query.setFloat(19,this.paczki.get(this.paczki.size() - 1).koszt);
+            query.setString(1,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).idPaczki);
+            query.setString(2,typ);
+            query.setNull(3,java.sql.Types.INTEGER);
+            query.setInt(4,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).numer_statusu);
+            query.setFloat(5,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).waga);
+            query.setObject(6,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).data_nadania);
+            query.setObject(7,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).data_dostarczenia);
+            query.setString(8,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).ulica_o);
+            query.setInt(9,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_ulica_o);
+            query.setInt(10,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_dom_o);
+            query.setString(11,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_tel_o);
+            query.setString(12,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).ulica_n);
+            query.setInt(13,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_ulica_n);
+            query.setInt(14,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_dom_n);
+            query.setString(15,this.pIterator.paczki.get(this.pIterator.paczki.size() - 1).nr_tel_n);
+            query.setInt(16,delikatna);
+            query.setInt(17,magnetyczna);
+            query.setInt(18,paletowa);
             query.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -98,37 +118,38 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     };
 
     public ArrayList<Paczka> PrzydzielPaczki(){
+        this.pIterator.paczki = PobierzPaczki();
         float kubaturaTMP = 0;
         float kubaturaMAX = ZnajdzNajbardziejLadownySamochod();
         if(kubaturaMAX == 0) return null;
-        ArrayList<Paczka> tmp = new ArrayList<Paczka>();
-        if(this.paczki.size() != 0) System.out.println("Kurier bierze paczki: ");
-        for(int i=0;i<paczki.size();i++){
-            if(this.paczki.get(i).numer_statusu == 0) {
-                if (kubaturaTMP + this.paczki.get(i).kubatura <= kubaturaMAX) {
+        ArrayList<Paczka> tmpList = new ArrayList<Paczka>();
+        if(this.pIterator.paczki.size() != 0) System.out.println("Kurier bierze paczki: ");
+        for(int i=0;i<pIterator.paczki.size();i++){
+            if(this.pIterator.paczki.get(i).numer_statusu == 0) {
+                if (kubaturaTMP + this.pIterator.paczki.get(i).wspoldzielone_dane.kubatura <= kubaturaMAX) {
                     String sql = "UPDATE Paczki SET status = ? WHERE idPaczki = ?";
                     try {
                         PreparedStatement query = this.connection.prepareStatement(sql);
-                        query.setInt(1,this.paczki.get(i).ZaktualizujStatus());
-                        query.setString(2,this.paczki.get(i).idPaczki);
+                        query.setInt(1,this.pIterator.paczki.get(i).ZaktualizujStatus());
+                        query.setString(2,this.pIterator.paczki.get(i).idPaczki);
                         query.executeUpdate();
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
-                    tmp.add(this.paczki.get(i));
-                    System.out.println("ID: " + this.paczki.get(i).idPaczki);
-                    kubaturaTMP += this.paczki.get(i).kubatura;
+                    tmpList.add(this.pIterator.paczki.get(i));
+                    System.out.println("ID: " + this.pIterator.paczki.get(i).idPaczki);
+                    kubaturaTMP += this.pIterator.paczki.get(i).wspoldzielone_dane.kubatura;
                 }
             }
         }
-        System.out.println("Przydzielono paczki: " + tmp.size());
-        return tmp;
+        System.out.println("Przydzielono paczki: " + tmpList.size());
+        return tmpList;
     }
 
     public Samochod PrzydzielSamochod(ArrayList<Paczka> ladunek){
         float kubatura = 0;
         for(int i=0;i<ladunek.size();i++){
-            kubatura += ladunek.get(i).kubatura;
+            kubatura += ladunek.get(i).wspoldzielone_dane.kubatura;
         }
         return PrzydzielOdpowiedniSamochod(kubatura);
     }
@@ -146,8 +167,8 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
     }
 
     private int PrzeszukajPaczki(Paczka paka){
-        for(int i=0;i<paczki.size();i++){
-            if(this.paczki.get(i).idPaczki.equals(paka.idPaczki)){
+        for(int i=0;i<pIterator.paczki.size();i++){
+            if(this.pIterator.paczki.get(i).idPaczki.equals(paka.idPaczki)){
                 return i;
             }
         }
@@ -163,18 +184,18 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
                         String sql = "UPDATE Paczki SET status = ? WHERE idPaczki = ?";
                         try {
                             PreparedStatement query = this.connection.prepareStatement(sql);
-                            query.setInt(1, this.paczki.get(index).ZaktualizujStatus());
-                            query.setString(2, this.paczki.get(index).idPaczki);
+                            query.setInt(1, this.pIterator.paczki.get(index).ZaktualizujStatus());
+                            query.setString(2, this.pIterator.paczki.get(index).idPaczki);
                             query.executeUpdate();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
                     } else {
-                        this.paczki.get(index).CofnijStatus();
-                        String sql = "UPDATE Paczki SET status = 0 WHERE idPaczki = ?";
+                        this.pIterator.paczki.get(index).CofnijStatus();
+                        String sql = "UPDATE Paczki SET status = 0, idPracownicy = NULL WHERE idPaczki = ?";
                         try {
                             PreparedStatement query = this.connection.prepareStatement(sql);
-                            query.setString(1, this.paczki.get(index).idPaczki);
+                            query.setString(1, this.pIterator.paczki.get(index).idPaczki);
                             query.executeUpdate();
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();

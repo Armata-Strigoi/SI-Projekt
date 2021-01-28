@@ -1,0 +1,9 @@
+CREATE TABLE `samochody` (
+  `idSamochody` int NOT NULL AUTO_INCREMENT,
+  `Typ` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Marka` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Model` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Pojemność` float NOT NULL,
+  PRIMARY KEY (`idSamochody`),
+  UNIQUE KEY `idSamochody_UNIQUE` (`idSamochody`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci

@@ -14,6 +14,7 @@ public class Kurier extends Pracownik {
     }
 
     private void PobierzPaczki(){
+
         this.lista_paczek = this.magazyn.PrzydzielPaczki();
         if(this.lista_paczek != null && this.lista_paczek.size()>0){
             for(int i=0;i<lista_paczek.size();i++){
@@ -73,7 +74,7 @@ public class Kurier extends Pracownik {
     }
 
     private void ZglosDostarczeniePaczek(){// zwroc samochod i liste
-        if(this.samochod != null && this.lista_paczek != null) {
+        if(this.lista_paczek != null) {
             this.magazyn.DostarczPaczki(this.lista_paczek, this.samochod);
             this.lista_paczek.clear();
             this.samochod = null;
@@ -114,7 +115,9 @@ public class Kurier extends Pracownik {
             }else if(this.opcja == 5){
                 Listuj();
             }else if(this.opcja == 0) {
-                this.wyloguj = true;
+                if(this.lista_paczek != null && this.lista_paczek.size()==0)
+                    this.wyloguj = true;
+                else System.out.println("Skoncz prace lub odloz pozostale paczki!");
             }
         }
     };

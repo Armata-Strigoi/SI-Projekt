@@ -8,16 +8,22 @@ public class PracownikStacjonarny extends Pracownik {
         super(magazyn, id);
     }
     private void NadajPaczke(){
+        int delikatna = 0, magnetyczna = 0, paletowa = 0;
         System.out.println("--- Nadawanie paczki ---");
-        System.out.println("Podaj wysokosc paczki:");
-        float wysokosc = scanner.nextFloat();
-        System.out.println("Podaj szerokosc paczki:");
-        float szerokosc = scanner.nextFloat();
-        System.out.println("Podaj glebokosc paczki:");
-        float glebokosc = scanner.nextFloat();
+        System.out.println("Czy paczka ma byc oznaczona jako delikatna?");
+        if(scanner.next().equals("tak"))
+            delikatna = 1;
+        System.out.println("Czy paczka ma byc oznaczona jako magnetyczna?");
+        if(scanner.next().equals("tak"))
+            magnetyczna = 1;
+        System.out.println("Czy paczka ma byc oznaczona jako paletowa?");
+        if(scanner.next().equals("tak"))
+            paletowa = 1;
+        System.out.println("Podaj typ paczki:");
+        String typ = scanner.next();
+
         System.out.println("Podaj wage paczki:");
         float waga = scanner.nextFloat();
-
         System.out.println("Podaj ulice odbiorcy:");
         String ulica_o = scanner.next();
         System.out.println("Podaj numer ulicy odbiorcy:");
@@ -36,9 +42,7 @@ public class PracownikStacjonarny extends Pracownik {
         System.out.println("Podaj numer telefonu nadawcy:");
         String nr_tel_n = scanner.next();
 
-        float koszt = szerokosc*wysokosc*glebokosc/waga;
-
-        this.magazyn.NadajPaczke(wysokosc,szerokosc,glebokosc,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,koszt);
+        this.magazyn.NadajPaczke(typ,waga,ulica_o,nr_ulica_o,nr_dom_o,nr_tel_o,ulica_n,nr_ulica_n,nr_dom_n,nr_tel_n,delikatna,magnetyczna,paletowa);
     }
 
     @Override

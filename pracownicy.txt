@@ -1,0 +1,17 @@
+CREATE TABLE `pracownicy` (
+  `idPracownicy` int NOT NULL AUTO_INCREMENT,
+  `Imie` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Nazwisko` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Login` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Hasło` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Stanowisko` varchar(45) COLLATE utf8_polish_ci NOT NULL,
+  `Nr_tel` varchar(15) COLLATE utf8_polish_ci NOT NULL,
+  `Ulica` varchar(70) COLLATE utf8_polish_ci NOT NULL,
+  `Nr_ulica` int NOT NULL,
+  `Nr_dom` int DEFAULT NULL,
+  `Email` varchar(70) COLLATE utf8_polish_ci DEFAULT NULL,
+  `Data_zatrudnienia` date NOT NULL,
+  `Wypłata` float NOT NULL,
+  PRIMARY KEY (`idPracownicy`),
+  UNIQUE KEY `idPracownicy_UNIQUE` (`idPracownicy`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci
