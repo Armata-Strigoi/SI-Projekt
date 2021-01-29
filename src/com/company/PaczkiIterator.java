@@ -2,9 +2,13 @@ package com.company;
 
 import java.util.ArrayList;
 
+import com.company.STATUS;
+
+import static com.company.STATUS.PIERWSZY;
+
 public class PaczkiIterator implements IteratorCore{
     public ArrayList<Paczka> paczki;
-    private int obecnaPozycja = 0;
+    public int obecnaPozycja = 0;
 
     public PaczkiIterator(ArrayList<Paczka> paczki){
         this.paczki = paczki;
@@ -30,14 +34,14 @@ public class PaczkiIterator implements IteratorCore{
     }
 
     public ArrayList<Paczka> ZwrocPaczkiWDoreczeniu(){
-        ArrayList<Paczka> paczuchy = new ArrayList<Paczka>();
+        ArrayList<Paczka> paczki = new ArrayList<Paczka>();
         while(hasNext()){
-            if(getNext().numer_statusu == 1){ // Potem na enume
-                paczuchy.add(getNext());
+            if(getNext().numer_statusu == 1){
+                paczki.add(getNext());
             }
         }
         reset();
-        return paczuchy;
+        return paczki;
     }
 
     public ArrayList<Paczka> ZwrocPaczkiZMiesiaca(int miesiac){
@@ -48,7 +52,7 @@ public class PaczkiIterator implements IteratorCore{
         ArrayList<Paczka> paczuchy = new ArrayList<Paczka>();
         while(hasNext()){
             Paczka tmp = getNext();
-            if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getMonth() == (miesiac-1)){ // Potem na enume
+            if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getMonth() == (miesiac-1)){
                 paczuchy.add(tmp);
             }
         }
@@ -64,7 +68,7 @@ public class PaczkiIterator implements IteratorCore{
         ArrayList<Paczka> paczuchy = new ArrayList<Paczka>();
         while(hasNext()){
             Paczka tmp = getNext();
-            if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getYear() + 1900 == rok){ // Potem na enume
+            if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getYear() + 1900 == rok){
                 paczuchy.add(tmp);
             }
         }
@@ -73,18 +77,18 @@ public class PaczkiIterator implements IteratorCore{
     }
     @Override
     public Paczka getIndex(int index){
-        if(index < paczki.size()) return paczki.get(index);
+        if(index < size()) return paczki.get(index);
         return null;
     }
 
     @Override
     public boolean hasIndex(int i){
-        return i < paczki.size();
+        return i < size();
     }
 
     @Override
     public boolean hasNext(){
-        return obecnaPozycja < paczki.size();
+        return obecnaPozycja < size();
     }
 
     @Override
@@ -101,7 +105,7 @@ public class PaczkiIterator implements IteratorCore{
         obecnaPozycja = 0;
     }
 
-    @Override
+
     public void add(Paczka co){
         this.paczki.add(co);
     }

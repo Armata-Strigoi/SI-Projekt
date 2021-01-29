@@ -5,11 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Kurier extends Pracownik {
+public class PracownikKurier extends Pracownik {
     ArrayList<Paczka> lista_paczek;
-    Samochod samochod;
+    Pojazd pojazd;
 
-    Kurier(Magazyn magazyn, int id, Connection connection){
+    public PracownikKurier(Magazyn magazyn, int id, Connection connection){
         super(magazyn,id,connection);
     }
 
@@ -34,11 +34,16 @@ public class Kurier extends Pracownik {
 
     private void PrzydzielPojazd(){
         if(lista_paczek != null) {
-            this.samochod = this.magazyn.PrzydzielSamochod(lista_paczek);
+            this.pojazd = this.magazyn.PrzydzielSamochod(lista_paczek);
+            if(this.pojazd != null)System.out.println("Przydzielono: " + this.pojazd.toString());
         }
     };
 
     private void DostarczPaczke(){
+        if(this.pojazd == null){
+            System.out.println("Najpierw przydziel sobie pojazd");
+            return;
+        }
         String idPaczki;
         System.out.println("--- DOSTARCZANIE PACZKI ---");
         System.out.println("Podaj id paczki do dostarczenia");
@@ -74,18 +79,22 @@ public class Kurier extends Pracownik {
     }
 
     private void ZglosDostarczeniePaczek(){// zwroc samochod i liste
-        if(this.lista_paczek != null) {
-            this.magazyn.DostarczPaczki(this.lista_paczek, this.samochod);
-            this.lista_paczek.clear();
-            this.samochod = null;
+        if(this.pojazd != null){
+            if(this.lista_paczek != null) {
+                this.magazyn.DostarczPaczki(this.lista_paczek, this.pojazd);
+                this.lista_paczek.clear();
+                this.pojazd = null;
+            }
+        }else{
+            System.out.println("Nie mozna zwrocic paczek bez przydzielenia pojazdu");
         }
     }
 
     private void Listuj(){
         if(this.lista_paczek != null && this.lista_paczek.size()>0){
-            System.out.println("ID | ADRES | STATUS");
+            System.out.println("ID | RODZAJ | ADRES | STATUS");
             for(int i=0;i<lista_paczek.size();i++){
-                System.out.println(this.lista_paczek.get(i).idPaczki + " | " + this.lista_paczek.get(i).ulica_o + " | " + this.lista_paczek.get(i).status);
+                System.out.println(this.lista_paczek.get(i).idPaczki + " | " + this.lista_paczek.get(i).decorate() + " | " + this.lista_paczek.get(i).ulica_o + " | " + this.lista_paczek.get(i).status);
             }
         }
     }
@@ -115,7 +124,7 @@ public class Kurier extends Pracownik {
             }else if(this.opcja == 5){
                 Listuj();
             }else if(this.opcja == 0) {
-                if(this.lista_paczek != null && this.lista_paczek.size()==0)
+                if((this.lista_paczek != null && this.lista_paczek.size()==0) || this.lista_paczek == null)
                     this.wyloguj = true;
                 else System.out.println("Skoncz prace lub odloz pozostale paczki!");
             }

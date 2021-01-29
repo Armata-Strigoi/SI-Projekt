@@ -2,12 +2,11 @@ package com.company;
 
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 import java.util.stream.Collectors;
 
-public class Ksiegowy  extends Pracownik {
+public class PracownikKsiegowy extends Pracownik {
 
-    Ksiegowy(Magazyn magazyn, int id, Connection connection){
+    public PracownikKsiegowy(Magazyn magazyn, int id, Connection connection){
         super(magazyn,id,connection);
     }
 
@@ -61,29 +60,29 @@ public class Ksiegowy  extends Pracownik {
     }
 
     private void generujRaportRoczny(int rok){
-            if(rok > new java.util.Date().getYear() + 1900 || rok <= 0){
-                System.out.println("Podaj odpowiedni rok!");
-                return;
-            }
-            System.out.println("--- Generuje raport z roku: " + rok + " ---");
-            float zysk_z_paczek = this.magazyn.pIterator.ZwrocRocznyZysk(rok);
-            float wyplaty = 0;
-            if(zysk_z_paczek>0) {
-                System.out.println("Zysk z paczek: " + zysk_z_paczek);
-                try {
-                    Statement query = this.connection.createStatement();
-                    ResultSet result = query.executeQuery("SELECT SUM(wypłata) FROM pracownicy;");
-                    if (result.next()) {
-                        wyplaty = result.getFloat(1) * 12;
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+        if(rok > new java.util.Date().getYear() + 1900 || rok <= 0){
+            System.out.println("Podaj odpowiedni rok!");
+            return;
+        }
+        System.out.println("--- Generuje raport z roku: " + rok + " ---");
+        float zysk_z_paczek = this.magazyn.pIterator.ZwrocRocznyZysk(rok);
+        float wyplaty = 0;
+        if(zysk_z_paczek>0) {
+            System.out.println("Zysk z paczek: " + zysk_z_paczek);
+            try {
+                Statement query = this.connection.createStatement();
+                ResultSet result = query.executeQuery("SELECT SUM(wypłata) FROM pracownicy;");
+                if (result.next()) {
+                    wyplaty = result.getFloat(1) * 12;
                 }
-                System.out.println("Koszt pracownikow: " + wyplaty);
-                System.out.println("Razem: " + (zysk_z_paczek - wyplaty));
-                this.magazyn.pIterator.reset();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-            else System.out.println("W podanym roku nie odnotowano dzialalnosci");
+            System.out.println("Koszt pracownikow: " + wyplaty);
+            System.out.println("Razem: " + (zysk_z_paczek - wyplaty));
+            this.magazyn.pIterator.reset();
+        }
+        else System.out.println("W podanym roku nie odnotowano dzialalnosci");
     }
 
     private void generujRaportMiesieczny(int miesiac){

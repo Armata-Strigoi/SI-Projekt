@@ -11,14 +11,14 @@ public class Logowanie {
     private String[][] dane = new String[100][4]; // Login haslo rodzaj pracownika i id (pobierane z bazy)
     Connection connection;
 
-    private UzytkownikCore Uprawnij(String kogo,int id){
+    public UzytkownikCore Uprawnij(String kogo,int id){
         if(kogo.equals("PracownikStacjonarny"))return new PracownikStacjonarny(magazyn,id);
-        else if(kogo.equals("Kurier")) return new Kurier(magazyn,id,connection);
-        else if(kogo.equals("Ksiegowy")) return new Ksiegowy(magazyn,id,connection);
+        else if(kogo.equals("Kurier")) return new PracownikKurier(magazyn,id,connection);
+        else if(kogo.equals("Ksiegowy")) return new PracownikKsiegowy(magazyn,id,connection);
         else return null;
     }
 
-    private UzytkownikCore SprawdzDane(String login, String haslo){
+    public UzytkownikCore SprawdzDane(String login, String haslo){
         for(int i = 0;i<this.dane.length;i++){
             if(null != this.dane[i][0]) {
                 if (this.dane[i][0].equals(login)) {
@@ -31,7 +31,7 @@ public class Logowanie {
         return null;
     }
 
-    Logowanie(Magazyn magazyn, Connection connection){
+    public Logowanie(Magazyn magazyn, Connection connection){
         this.magazyn = magazyn;
         this.connection = connection;
         int i=0;

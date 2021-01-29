@@ -3,10 +3,9 @@ package com.company;
 public interface IteratorCore {
     boolean hasIndex(int i);
     boolean hasNext();
-    PaczkaCore getNext();
+    Object getNext();
     void reset();
-    PaczkaCore getIndex(int index);
-    void add(Paczka co);
+    Object getIndex(int index);
     int size();
 
 }
