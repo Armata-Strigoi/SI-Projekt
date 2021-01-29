@@ -87,59 +87,63 @@ public class Memento {
     }
 
     public void ZapiszStanPaczek(PaczkiIterator iterator, Connection connection){
-        caretaker.paczki.clear();
-        String sqlDelete = "DELETE FROM paczkiKopia";
-        try{
-            Statement delete = connection.createStatement();
-            delete.executeUpdate(sqlDelete);
-            } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Blad wczytywanai listy paczek");
-            return;
-        }
-        while(iterator.hasNext()){
-            Paczka tmp = iterator.getNext();
-            SharedPaczka sptmp = tmp.wspoldzielone_dane;
-            caretaker.paczki.add(tmp);
-            String sql = "insert into PaczkiKopia values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            try {
-                PreparedStatement query = connection.prepareStatement(sql);
-                query.setString(1,tmp.idPaczki);
-                query.setString(2,PaczkaFactory.getType(sptmp));
-                if(tmp.id_kuriera != null && tmp.id_kuriera != 0) query.setInt(3,tmp.id_kuriera);
-                    else query.setNull(3,java.sql.Types.INTEGER);
-                query.setFloat(4,sptmp.szerokosc);
-                query.setFloat(5,sptmp.wysokosc);
-                query.setFloat(6,sptmp.glebokosc);
-                query.setFloat(7,sptmp.kubatura);
-                query.setFloat(8,sptmp.koszt);
-                query.setInt(9,tmp.numer_statusu);
-                query.setFloat(10,tmp.waga);
-                query.setObject(11,tmp.data_nadania);
-                query.setObject(12,tmp.data_dostarczenia);
-                query.setString(13,tmp.ulica_o);
-                query.setInt(14,tmp.nr_ulica_o);
-                query.setInt(15,tmp.nr_dom_o);
-                query.setString(16,tmp.nr_tel_o);
-                query.setString(17,tmp.ulica_n);
-                query.setInt(18,tmp.nr_ulica_n);
-                query.setInt(19,tmp.nr_dom_n);
-                query.setString(20,tmp.nr_tel_n);
-                if (tmp.decorate().contains("Delikatna"))
-                    query.setInt(21,1);
-                else query.setInt(21,0);
-                if (tmp.decorate().contains("Z zawartoscia megnetyczna"))
-                    query.setInt(22,1);
-                else query.setInt(22,0);
-                if (tmp.decorate().contains("Paletowa"))
-                    query.setInt(23,1);
-                else query.setInt(23,0);
-                query.executeUpdate();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+        if(iterator.size()>0){
+
+            String sqlDelete = "DELETE FROM paczkiKopia";
+            try{
+                Statement delete = connection.createStatement();
+                delete.executeUpdate(sqlDelete);
+                }
+            catch (SQLException e) {
+                e.printStackTrace();
+                System.err.println("Blad wczytywanai listy paczek");
+                return;
             }
+            caretaker.paczki.clear();
+            while(iterator.hasNext()){
+                Paczka tmp = iterator.getNext();
+                SharedPaczka sptmp = tmp.wspoldzielone_dane;
+                caretaker.paczki.add(tmp);
+                String sql = "insert into PaczkiKopia values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                try {
+                    PreparedStatement query = connection.prepareStatement(sql);
+                    query.setString(1,tmp.idPaczki);
+                    query.setString(2,PaczkaFactory.getType(sptmp));
+                    if(tmp.id_kuriera != null && tmp.id_kuriera != 0) query.setInt(3,tmp.id_kuriera);
+                        else query.setNull(3,java.sql.Types.INTEGER);
+                    query.setFloat(4,sptmp.szerokosc);
+                    query.setFloat(5,sptmp.wysokosc);
+                    query.setFloat(6,sptmp.glebokosc);
+                    query.setFloat(7,sptmp.kubatura);
+                    query.setFloat(8,sptmp.koszt);
+                    query.setInt(9,tmp.numer_statusu);
+                    query.setFloat(10,tmp.waga);
+                    query.setObject(11,tmp.data_nadania);
+                    query.setObject(12,tmp.data_dostarczenia);
+                    query.setString(13,tmp.ulica_o);
+                    query.setInt(14,tmp.nr_ulica_o);
+                    query.setInt(15,tmp.nr_dom_o);
+                    query.setString(16,tmp.nr_tel_o);
+                    query.setString(17,tmp.ulica_n);
+                    query.setInt(18,tmp.nr_ulica_n);
+                    query.setInt(19,tmp.nr_dom_n);
+                    query.setString(20,tmp.nr_tel_n);
+                    if (tmp.decorate().contains("Delikatna"))
+                        query.setInt(21,1);
+                    else query.setInt(21,0);
+                    if (tmp.decorate().contains("Z zawartoscia megnetyczna"))
+                        query.setInt(22,1);
+                    else query.setInt(22,0);
+                    if (tmp.decorate().contains("Paletowa"))
+                        query.setInt(23,1);
+                    else query.setInt(23,0);
+                    query.executeUpdate();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+            System.out.println("Przeladowano historie");
         }
-        System.out.println("Przeladowano historie");
     }
 
     public void PrzywrocPoprzedniStan(Magazyn magazyn){

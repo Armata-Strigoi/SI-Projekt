@@ -11,11 +11,20 @@ public class PaczkiIterator implements IteratorCore{
     }
 
 
-    public float ZwrocZyskZPaczek(int miesiac){
+    public float ZwrocMiesiecznyZysk(int miesiac){
         ArrayList<Paczka> paczki_z_miesiaca = ZwrocPaczkiZMiesiaca(miesiac);
         float zysk_z_paczek = 0;
         for(int i=0;i<paczki_z_miesiaca.size();i++){
             zysk_z_paczek += paczki_z_miesiaca.get(i).wspoldzielone_dane.koszt;
+        }
+        return zysk_z_paczek;
+    }
+
+    public float ZwrocRocznyZysk(int rok){
+        ArrayList<Paczka> paczki_z_roku = ZwrocPaczkiZRok(rok);
+        float zysk_z_paczek = 0;
+        for(int i=0;i<paczki_z_roku.size();i++){
+            zysk_z_paczek += paczki_z_roku.get(i).wspoldzielone_dane.koszt;
         }
         return zysk_z_paczek;
     }
@@ -40,6 +49,22 @@ public class PaczkiIterator implements IteratorCore{
         while(hasNext()){
             Paczka tmp = getNext();
             if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getMonth() == (miesiac-1)){ // Potem na enume
+                paczuchy.add(tmp);
+            }
+        }
+        this.reset();
+        return paczuchy;
+    }
+
+    public ArrayList<Paczka> ZwrocPaczkiZRok(int rok){
+        if(rok > new java.util.Date().getYear() + 1900){
+            System.err.println("Podano zly rok !");
+            return null;
+        }
+        ArrayList<Paczka> paczuchy = new ArrayList<Paczka>();
+        while(hasNext()){
+            Paczka tmp = getNext();
+            if(tmp.data_dostarczenia != null && tmp.data_dostarczenia.getYear() + 1900 == rok){ // Potem na enume
                 paczuchy.add(tmp);
             }
         }
