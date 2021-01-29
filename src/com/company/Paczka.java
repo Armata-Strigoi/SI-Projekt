@@ -4,12 +4,12 @@ package com.company;
 import java.util.Date;
 
 public class Paczka extends PaczkaDecorator{
-    int numer_statusu,nr_ulica_o,nr_dom_o,nr_ulica_n,nr_dom_n;
-    Integer id_kuriera;
-    float waga;
-    String idPaczki,status,ulica_o,nr_tel_o,ulica_n,nr_tel_n;
-    Date data_nadania,data_dostarczenia;
-    SharedPaczka wspoldzielone_dane;
+    public int numer_statusu,nr_ulica_o,nr_dom_o,nr_ulica_n,nr_dom_n;
+    public Integer id_kuriera;
+    public float waga;
+    public String idPaczki,status,ulica_o,nr_tel_o,ulica_n,nr_tel_n;
+    public Date data_nadania,data_dostarczenia;
+    public SharedPaczka wspoldzielone_dane;
 
     Paczka(
             String idPaczki, SharedPaczka wspoldzieloneDane, float waga, String ulica_o,
@@ -20,7 +20,7 @@ public class Paczka extends PaczkaDecorator{
         this.wspoldzielone_dane = wspoldzieloneDane;
         this.waga = waga;
         this.numer_statusu = 0;
-        this.status = "Nadana";
+        this.status = STATUS.PIERWSZY.nazwa;
         this.id_kuriera = null;
 
         this.nr_ulica_n = nr_ulica_n;
@@ -36,10 +36,10 @@ public class Paczka extends PaczkaDecorator{
 
     }
 
-    Paczka(
-           String idPaczki,SharedPaczka wspoldzielone_dane,int idPracownicy, int status, float waga,
-           Date data_nadania, Date data_dostarczenia, String ulica_o, int nr_ulica_o, int nr_dom_o,
-           String nr_tel_o,String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n,PaczkaCore dekorator
+    public Paczka(
+            String idPaczki, SharedPaczka wspoldzielone_dane, int idPracownicy, int status, float waga,
+            Date data_nadania, Date data_dostarczenia, String ulica_o, int nr_ulica_o, int nr_dom_o,
+            String nr_tel_o, String ulica_n, int nr_ulica_n, int nr_dom_n, String nr_tel_n, PaczkaCore dekorator
     ){
 
         super(dekorator);
@@ -65,20 +65,20 @@ public class Paczka extends PaczkaDecorator{
     public int ZaktualizujStatus() {
         this.numer_statusu++;
         if(this.numer_statusu == 1) {
-            this.status = "Przekazana do doreczenia";
+            this.status = STATUS.DRUGI.nazwa;
         }else if(this.numer_statusu == 2){
-            this.status = "Doreczono";
+            this.status = STATUS.TRZECI.nazwa;
         }else if(this.numer_statusu > 2) this.numer_statusu = 2;
         return this.numer_statusu;
     }
     public void UstawStatus() {
         if(this.numer_statusu == 0) {
-            this.status = "Nadana";
+            this.status = STATUS.PIERWSZY.nazwa;
         }else if(this.numer_statusu == 1){
-            this.status = "Przekazana do doreczenia";
+            this.status = STATUS.DRUGI.nazwa;
         }
         else if(this.numer_statusu == 2) {
-            this.status = "Doreczono";
+            this.status = STATUS.TRZECI.nazwa;
         }
     }
     public Date Dostarcz(int id_kuriera){
@@ -90,7 +90,7 @@ public class Paczka extends PaczkaDecorator{
     public void CofnijStatus(){ // Jesli nie udalo sie dostarczyc przesylki to wraca do magazuny
         this.id_kuriera = null;
         this.numer_statusu = 0;
-        this.status = "Nadana";
+        this.status = STATUS.PIERWSZY.nazwa;
     }
 
     @Override

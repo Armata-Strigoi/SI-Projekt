@@ -19,7 +19,7 @@ public class SharedPaczka {
         this.kubatura = kubatura;
     }
 
-    private float ObliczKubature(){
+    public float ObliczKubature(){
         return this.wysokosc * this.szerokosc * this.glebokosc;
     }
 

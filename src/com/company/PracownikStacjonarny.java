@@ -1,10 +1,11 @@
 package com.company;
 
 import java.sql.Connection;
+import java.util.List;
 
 public class PracownikStacjonarny extends Pracownik {
 
-    PracownikStacjonarny(Magazyn magazyn, int id){
+    public PracownikStacjonarny(Magazyn magazyn, int id){
         super(magazyn, id);
     }
     private void NadajPaczke(){
@@ -20,24 +21,29 @@ public class PracownikStacjonarny extends Pracownik {
         if(scanner.next().equals("tak"))
             paletowa = 1;
         System.out.println("Podaj typ paczki:");
+        List<String>typy = PaczkaFactory.PobierzListeTypow();
+        if(!typy.isEmpty()) {
+            for(int i=0;i<typy.size();i++){
+                System.out.println(typy.get(i).toString());
+            }
+        }
         String typ = scanner.next();
-
         System.out.println("Podaj wage paczki:");
         float waga = scanner.nextFloat();
         System.out.println("Podaj ulice odbiorcy:");
         String ulica_o = scanner.next();
-        System.out.println("Podaj numer ulicy odbiorcy:");
+        System.out.println("Podaj numer lokalu odbiorcy:");
         int nr_ulica_o = scanner.nextInt();
-        System.out.println("Podaj numer domu odbiorcy:");
+        System.out.println("Podaj numer mieszkania odbiorcy:");
         int nr_dom_o = scanner.nextInt();
         System.out.println("Podaj numer telefonu odbiorcy:");
         String nr_tel_o = scanner.next();
 
         System.out.println("Podaj ulice nadawcy:");
         String ulica_n = scanner.next();
-        System.out.println("Podaj numer ulicy nadawcy:");
+        System.out.println("Podaj numer lokalu nadawcy:");
         int nr_ulica_n = scanner.nextInt();
-        System.out.println("Podaj numer domu nadawcy:");
+        System.out.println("Podaj numer mieszkania nadawcy:");
         int nr_dom_n = scanner.nextInt();
         System.out.println("Podaj numer telefonu nadawcy:");
         String nr_tel_n = scanner.next();

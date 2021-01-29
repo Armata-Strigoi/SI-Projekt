@@ -22,10 +22,10 @@ public class PaczkaFactory {
 
     public static List<String> PobierzListeTypow(){ // Pobiera liste typow do wyboru dla pracownika stacjonarnego
         List<String> typy = new ArrayList<String>();
-
         Object[] cos = typyPaczek.keySet().toArray();
+
         for(int i =0;i<typyPaczek.size();i++){
-            typy.add(typyPaczek.get(cos[i]).toString() + " " + typyPaczek.get(cos[i]).toString());
+            typy.add(cos[i] + " " + typyPaczek.get(cos[i]).toString());
         }
         return typy;
     }

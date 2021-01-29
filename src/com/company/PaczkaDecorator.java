@@ -1,6 +1,6 @@
 package com.company;
 
-public abstract class PaczkaDecorator implements PaczkaCore {
+public abstract class PaczkaDecorator extends Object implements PaczkaCore {
     public PaczkaCore core;
 
     public PaczkaDecorator(PaczkaCore paczka) {

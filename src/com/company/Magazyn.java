@@ -7,15 +7,15 @@ import java.util.UUID;
 
 
 public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i generowania listy paczek czekajacych na wysylke
-    private Connection connection;
-    private ArrayList<Samochod> dostepne_samochody;
+    public Connection connection;
+    public PojazdIterator dostepne_samochody;
     public PaczkiIterator pIterator;
     public Memento kopia;
 
-    Magazyn(Connection connection){
+    public Magazyn(Connection connection){
         this.connection = connection;
         this.pIterator = new PaczkiIterator(PobierzPaczki());
-        this.dostepne_samochody = PobierzSamochody();
+        this.dostepne_samochody = new PojazdIterator(PobierzSamochody());
         this.kopia = new Memento(this.connection);
     }
 
@@ -23,13 +23,13 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         this.kopia.ZapiszStanPaczek(this.pIterator,this.connection);
     }
 
-    private ArrayList<Samochod> PobierzSamochody(){
-        ArrayList<Samochod> tmp = new ArrayList<Samochod>();
+    public ArrayList<Pojazd> PobierzSamochody(){
+        ArrayList<Pojazd> tmp = new ArrayList<Pojazd>();
         try {
             Statement query = this.connection.createStatement();
             ResultSet result = query.executeQuery("select * from Samochody");
             while(result.next())
-                tmp.add(new Samochod(result.getInt("idSamochody"),result.getString("typ"),
+                tmp.add(PojazdFactory.stworzPojazd(result.getInt("idSamochody"),result.getString("typ"),
                         result.getString("marka"),result.getString("model"),result.getFloat("pojemność")));
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -37,7 +37,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return tmp;
     }
 
-    private ArrayList<Paczka> PobierzPaczki(){
+    public ArrayList<Paczka> PobierzPaczki(){
         ArrayList<Paczka> tmpList = new ArrayList<Paczka>();
         try {
             Statement query = this.connection.createStatement();
@@ -61,13 +61,13 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return tmpList;
     }
 
-    private float ZnajdzNajbardziejLadownySamochod(){
+    public float ZnajdzNajbardziejLadownySamochod(){
         if(this.dostepne_samochody.size()>0) {
             int max = 0;
             for (int i = 0; i < this.dostepne_samochody.size(); i++) {
-                if (this.dostepne_samochody.get(i).ladownosc > this.dostepne_samochody.get(max).ladownosc)max = i;
+                if (this.dostepne_samochody.getIndex(i).ladownosc > this.dostepne_samochody.getIndex(max).ladownosc)max = i;
             }
-            return this.dostepne_samochody.get(max).ladownosc;
+            return this.dostepne_samochody.getIndex(max).ladownosc;
         }
         return 0;
     }
@@ -147,7 +147,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return tmpList;
     }
 
-    public Samochod PrzydzielSamochod(ArrayList<Paczka> ladunek){
+    public Pojazd PrzydzielSamochod(ArrayList<Paczka> ladunek){
         float kubatura = 0;
         for(int i=0;i<ladunek.size();i++){
             kubatura += ladunek.get(i).wspoldzielone_dane.kubatura;
@@ -155,19 +155,19 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return PrzydzielOdpowiedniSamochod(kubatura);
     }
 
-    private Samochod PrzydzielOdpowiedniSamochod(float kubatura){
+    public Pojazd PrzydzielOdpowiedniSamochod(float kubatura){
         if(this.dostepne_samochody.size() <= 0)return null;
         int min = 0;
         for(int i=0;i<dostepne_samochody.size();i++){
-            if(this.dostepne_samochody.get(i).ladownosc > kubatura && this.dostepne_samochody.get(i).ladownosc < this.dostepne_samochody.get(min).ladownosc)min = i;
+            if(this.dostepne_samochody.getIndex(i).ladownosc > kubatura && this.dostepne_samochody.getIndex(i).ladownosc < this.dostepne_samochody.getIndex(min).ladownosc)min = i;
         }
-        Samochod tmp = this.dostepne_samochody.get(min);
+        Pojazd tmp = this.dostepne_samochody.getIndex(min);
         this.dostepne_samochody.remove(min); // Oddany w rece kuriera wiec niedostepny
         System.out.println("Przydzielono pojazd nr: " + tmp.id);
         return tmp;
     }
 
-    private int PrzeszukajPaczki(Paczka paka){
+    public int PrzeszukajPaczki(Paczka paka){
         for(int i=0;i<pIterator.paczki.size();i++){
             if(this.pIterator.paczki.get(i).idPaczki.equals(paka.idPaczki)){
                 return i;
@@ -176,7 +176,7 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         return -1;
     }
 
-    private void Magazynuj(ArrayList<Paczka> dostarczony_ladunek){//Zmiana statusu odpowiednich paczek
+    public void Magazynuj(ArrayList<Paczka> dostarczony_ladunek){//Zmiana statusu odpowiednich paczek
         int index;
         if(dostarczony_ladunek != null){
             for(int i=0;i<dostarczony_ladunek.size();i++) {
@@ -208,9 +208,9 @@ public class Magazyn { // Obsluga wysylania paczek, obliczania kubatury i genero
         }
     }
 
-    public void DostarczPaczki(ArrayList<Paczka> dostarczony_ladunek, Samochod zwrocony_samochod){
+    public void DostarczPaczki(ArrayList<Paczka> dostarczony_ladunek, Pojazd zwrocony_pojazd){
         Magazynuj(dostarczony_ladunek);
-        this.dostepne_samochody.add(zwrocony_samochod);
+        this.dostepne_samochody.add(zwrocony_pojazd);
     }
 
 }

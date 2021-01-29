@@ -5,14 +5,14 @@ import java.sql.*;
 
 public class Memento {
 
-    private Caretaker caretaker;
+    public Caretaker caretaker;
 
     Memento(Connection connection){
         this.caretaker = new Caretaker();
         ZaladujZBazy(connection);
     }
 
-    private void ZaladujZBazy(Connection connection){
+     public void ZaladujZBazy(Connection connection){
         try {
             Statement query = connection.createStatement();
             ResultSet result = query.executeQuery("SELECT * FROM paczkiKopia");
@@ -93,7 +93,7 @@ public class Memento {
             try{
                 Statement delete = connection.createStatement();
                 delete.executeUpdate(sqlDelete);
-                }
+            }
             catch (SQLException e) {
                 e.printStackTrace();
                 System.err.println("Blad wczytywanai listy paczek");
@@ -110,7 +110,7 @@ public class Memento {
                     query.setString(1,tmp.idPaczki);
                     query.setString(2,PaczkaFactory.getType(sptmp));
                     if(tmp.id_kuriera != null && tmp.id_kuriera != 0) query.setInt(3,tmp.id_kuriera);
-                        else query.setNull(3,java.sql.Types.INTEGER);
+                    else query.setNull(3,java.sql.Types.INTEGER);
                     query.setFloat(4,sptmp.szerokosc);
                     query.setFloat(5,sptmp.wysokosc);
                     query.setFloat(6,sptmp.glebokosc);
