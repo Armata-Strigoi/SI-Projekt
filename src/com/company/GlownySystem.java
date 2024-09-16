@@ -25,7 +25,7 @@ public class GlownySystem {
             this.magazyn = new Magazyn(connection.connection);
             this.log = new Logowanie(magazyn,connection.connection);
         } else {
-            System.err.println("System juz istnieje!");
+            System.err.println("System juz zostal zaladowany!");
         }
     }
 
